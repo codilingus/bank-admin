@@ -34,6 +34,46 @@ public class User {
         usersAccount.add(account);
     }
 
+    public UserBasic getUserBasic(){
+        return new UserBasic(this.userId, this.name, this.surname);
+    }
+    public int getUserId() {
+        return userId;
+    }
 
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public int getPesel() {
+        return pesel;
+    }
+
+    public void setPesel(int pesel) {
+        this.pesel = pesel;
+    }
+
+    public List<Account> getUsersAccount() {
+        return usersAccount;
+    }
+
+    public void setUsersAccount(List<Account> usersAccount) {
+        this.usersAccount = usersAccount;
+    }
 }
