@@ -1,6 +1,7 @@
 package com.example.bank.user;
 
 import com.example.bank.account.Account;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class User {
     private String surname;
     private int pesel;
     private List<Account> usersAccount = new LinkedList<>();
+
 
     public User(String name, String surname, int pesel) {
         this.name = name;

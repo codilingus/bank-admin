@@ -8,8 +8,12 @@ public class Account {
     private double balance;
     private LocalDate creationDate;
 
-    public Account(int accountId) {
+    public Account(int accountId, double balance, LocalDate creationDate) {
         this.accountId = accountId;
-        this.creationDate = LocalDate.now();
+        this.balance = balance;
+        this.creationDate = creationDate;
+    }
+
+    public Account() {
     }
 }
