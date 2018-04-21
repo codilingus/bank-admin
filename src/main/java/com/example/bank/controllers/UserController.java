@@ -26,12 +26,11 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public User getUserDetails(@PathVariable int id) {
-
         return userRepository.findById(id).orElse(null);
     }
 
     @PostMapping("/user")
-    public void addUser(@RequestBody User user){
+    public void addUser(@RequestBody User user) {
         userRepository.save(user);
     }
 
@@ -42,7 +41,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user/{id}")
-    public void deleteUser(@PathVariable int id){
+    public void deleteUser(@PathVariable int id) {
         userRepository.deleteById(id);
     }
 }

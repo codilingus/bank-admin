@@ -1,13 +1,15 @@
 package com.example.bank.user;
 
 import com.example.bank.account.Account;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class User {
@@ -69,11 +71,19 @@ public class User {
         this.pesel = pesel;
     }
 
+    @JsonIgnore
     public List<Account> getUsersAccount() {
         return usersAccount;
     }
 
     public void setUsersAccount(List<Account> usersAccount) {
         this.usersAccount = usersAccount;
+    }
+
+    @JsonGetter("accountIds")
+    public List<Integer> getAccountBasic() {
+        return usersAccount.stream()
+                .map(account -> account.getAccountId())
+                .collect(Collectors.toList());
     }
 }
