@@ -19,6 +19,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserValidator userValidator;
+
     @GetMapping("/users")
     public List<UserBasic> getAllUserBasic() {
 
@@ -34,7 +37,7 @@ public class UserController {
 
     @PostMapping("/user")
     public ResponseEntity addUser(@RequestBody User user) {
-        if (UserValidator.areValuesEmpty(user) || UserValidator.peselCounts11Numbers(user)) {
+        if (!userValidator.validate(user)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } else {
             userRepository.save(user);
@@ -44,7 +47,7 @@ public class UserController {
 
     @PutMapping("/user/{id}")
     public ResponseEntity updateUser(@RequestBody User user, @PathVariable int id) {
-        if (UserValidator.areValuesEmpty(user)) {
+        if (!userValidator.validate(user)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } else {
             user.setUserId(id);
