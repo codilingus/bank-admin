@@ -4,7 +4,10 @@ import com.example.bank.repositories.UserRepository;
 import com.example.bank.user.User;
 import com.example.bank.user.UserBasic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.bank.validation.UserValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,14 +33,24 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public void addUser(@RequestBody User user) {
-        userRepository.save(user);
+    public ResponseEntity addUser(@RequestBody User user) {
+        if (UserValidator.areValuesEmpty(user) || UserValidator.peselCounts11Numbers(user)) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        } else {
+            userRepository.save(user);
+            return new ResponseEntity(HttpStatus.OK);
+        }
     }
 
     @PutMapping("/user/{id}")
-    public void updateUser(@RequestBody User user, @PathVariable int id) {
-        user.setUserId(id);
-        userRepository.save(user);
+    public ResponseEntity updateUser(@RequestBody User user, @PathVariable int id) {
+        if (UserValidator.areValuesEmpty(user)) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        } else {
+            user.setUserId(id);
+            userRepository.save(user);
+            return new ResponseEntity(HttpStatus.OK);
+        }
     }
 
     @DeleteMapping("/user/{id}")

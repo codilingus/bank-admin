@@ -20,12 +20,12 @@ public class User {
     private int userId;
     private String name;
     private String surname;
-    private int pesel;
+    private Long pesel;
     @OneToMany
     private List<Account> usersAccount = new LinkedList<>();
 
 
-    public User(String name, String surname, int pesel) {
+    public User(String name, String surname, Long pesel) {
         this.name = name;
         this.surname = surname;
         this.pesel = pesel;
@@ -65,11 +65,11 @@ public class User {
         this.surname = surname;
     }
 
-    public int getPesel() {
+    public Long getPesel() {
         return pesel;
     }
 
-    public void setPesel(int pesel) {
+    public void setPesel(Long pesel) {
         this.pesel = pesel;
     }
 
