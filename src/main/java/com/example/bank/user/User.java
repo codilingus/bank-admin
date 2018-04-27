@@ -4,10 +4,7 @@ import com.example.bank.account.Account;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +18,7 @@ public class User {
     private String name;
     private String surname;
     private Long pesel;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Account> usersAccount = new LinkedList<>();
 
 
@@ -38,6 +35,7 @@ public class User {
         usersAccount.add(account);
     }
 
+    @JsonIgnore
     public UserBasic getUserBasic(){
         return new UserBasic(this.userId, this.name, this.surname);
     }
