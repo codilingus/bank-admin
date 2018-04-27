@@ -15,7 +15,6 @@ public class UserValidator {
     }
 
     public static Boolean peselCounts11Numbers(User user) {
-        return ((user.getPesel().toString().length() > 11)
-                || (user.getPesel().toString().length() < 11));
+        return !(user.getPesel().toString().length() == 11);
     }
 }
