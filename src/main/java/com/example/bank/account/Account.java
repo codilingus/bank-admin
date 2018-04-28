@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -13,17 +14,21 @@ public class Account {
     @Id
     @GeneratedValue
     private int accountId;
-    private double balance;
+    private BigDecimal balance;
     @JsonIgnore
     private LocalDate creationDate;
 
-    public Account(int accountId, double balance, LocalDate creationDate) {
+    public Account(int accountId, BigDecimal balance, LocalDate creationDate) {
         this.accountId = accountId;
         this.balance = balance;
         this.creationDate = creationDate;
     }
 
     public Account() {
+    }
+
+    public void add(BigDecimal moneyToAdd){
+        this.balance = balance.add(moneyToAdd);
     }
 
     public int getAccountId() {
@@ -34,12 +39,12 @@ public class Account {
         this.accountId = accountId;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
+    public void setBalance(Double balance) {
+        this.balance = BigDecimal.valueOf(balance);
     }
 
     public LocalDate getCreationDate() {

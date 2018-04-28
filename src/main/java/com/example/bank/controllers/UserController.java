@@ -1,18 +1,19 @@
 package com.example.bank.controllers;
 
 import com.example.bank.account.Account;
+import com.example.bank.account.Payment;
 import com.example.bank.repositories.AccountRepository;
 import com.example.bank.repositories.UserRepository;
 import com.example.bank.user.User;
 import com.example.bank.user.UserBasic;
+import com.example.bank.validation.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.bank.validation.UserValidator;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,14 +44,10 @@ public class UserController {
     }
 
     @GetMapping("/user/{userId}/account/{accountId}")
-    public ResponseEntity<Account> getAccountDetails(@PathVariable Integer userId, @PathVariable Integer accountId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            Optional<Account> findAccount = user.get().getUsersAccount().stream()
-                    .filter(account -> account.getAccountId() == accountId).findFirst();
-            if (findAccount.isPresent()) {
-                return new ResponseEntity(findAccount.get(), HttpStatus.OK);
-            }
+    public ResponseEntity getAccountDetails(@PathVariable Integer userId, @PathVariable Integer accountId) {
+        Optional<Account> findAccount = findUserAccount(userId, accountId);
+        if (findAccount.isPresent()) {
+            return new ResponseEntity(findAccount.get(), HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
@@ -86,8 +83,28 @@ public class UserController {
         }
     }
 
+    @PutMapping("/user/{userId}/account/{accountId}")
+    public void payment(@RequestBody Payment payment, @PathVariable int userId, @PathVariable int accountId) {
+        Optional<Account> findAccount = findUserAccount(userId, accountId);
+        if (findAccount.isPresent()) {
+            BigDecimal stringToBigDecimal = new BigDecimal(payment.getAmount());
+            findAccount.get().add(stringToBigDecimal);
+            accountRepository.save(findAccount.get());
+        }
+    }
+
     @DeleteMapping("/user/{id}")
     public void deleteUser(@PathVariable int id) {
         userRepository.deleteById(id);
+    }
+
+    private Optional<Account> findUserAccount(Integer userId, Integer accountId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            return user.get().getUsersAccount().stream()
+                    .filter(account -> account.getAccountId() == accountId)
+                    .findFirst();
+        }
+        return Optional.empty();
     }
 }
