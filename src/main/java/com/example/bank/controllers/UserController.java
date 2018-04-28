@@ -2,6 +2,7 @@ package com.example.bank.controllers;
 
 import com.example.bank.account.Account;
 import com.example.bank.account.Payment;
+import com.example.bank.account.Transfer;
 import com.example.bank.repositories.AccountRepository;
 import com.example.bank.repositories.UserRepository;
 import com.example.bank.user.User;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.jws.soap.SOAPBinding;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -46,10 +48,9 @@ public class UserController {
     @GetMapping("/user/{userId}/account/{accountId}")
     public ResponseEntity getAccountDetails(@PathVariable Integer userId, @PathVariable Integer accountId) {
         Optional<Account> findAccount = findUserAccount(userId, accountId);
-        if (findAccount.isPresent()) {
-            return new ResponseEntity(findAccount.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return findAccount
+                .map(account -> new ResponseEntity(account, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity(HttpStatus.BAD_REQUEST));
     }
 
     @PostMapping("/user/{id}/account")
@@ -72,18 +73,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/user/{id}")
-    public ResponseEntity updateUser(@RequestBody User user, @PathVariable int id) {
-        if (!userValidator.validate(user)) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        } else {
-            user.setUserId(id);
-            userRepository.save(user);
-            return new ResponseEntity(HttpStatus.OK);
-        }
-    }
-
-    @PutMapping("/user/{userId}/account/{accountId}/payment")
+    @PostMapping("/user/{userId}/account/{accountId}/payment")
     public void payment(@RequestBody Payment payment, @PathVariable int userId, @PathVariable int accountId) {
         Optional<Account> findAccount = findUserAccount(userId, accountId);
         if (findAccount.isPresent()) {
@@ -93,13 +83,37 @@ public class UserController {
         }
     }
 
-    @PutMapping("/user/{userId}/account/{accountId}/payOff")
+    @PostMapping("/user/{userId}/account/{accountId}/payOff")
     public void payOff(@RequestBody Payment payment, @PathVariable int userId, @PathVariable int accountId) {
         Optional<Account> findAccount = findUserAccount(userId, accountId);
         if (findAccount.isPresent()) {
             BigDecimal stringToBigDecimal = new BigDecimal(payment.getAmount());
             findAccount.get().substract(stringToBigDecimal);
             accountRepository.save(findAccount.get());
+        }
+    }
+
+    @PostMapping("/transfer")
+    public void transfer(@RequestBody Transfer transfer) {
+        Optional<Account> transferFrom = accountRepository.findById(transfer.getTransferFrom());
+        Optional<Account> transferTo = accountRepository.findById(transfer.getTransferTo());
+        if (transferFrom.isPresent() && transferTo.isPresent()) {
+            BigDecimal stringToBigDecimal = new BigDecimal(transfer.getTransferAmount());
+            transferFrom.get().substract(stringToBigDecimal);
+            transferTo.get().add(stringToBigDecimal);
+            accountRepository.save(transferFrom.get());
+            accountRepository.save(transferTo.get());
+        }
+    }
+
+    @PutMapping("/user/{id}")
+    public ResponseEntity updateUser(@RequestBody User user, @PathVariable int id) {
+        if (!userValidator.validate(user)) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        } else {
+            user.setUserId(id);
+            userRepository.save(user);
+            return new ResponseEntity(HttpStatus.OK);
         }
     }
 
