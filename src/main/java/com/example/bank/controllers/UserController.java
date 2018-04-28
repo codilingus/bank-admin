@@ -83,12 +83,22 @@ public class UserController {
         }
     }
 
-    @PutMapping("/user/{userId}/account/{accountId}")
+    @PutMapping("/user/{userId}/account/{accountId}/payment")
     public void payment(@RequestBody Payment payment, @PathVariable int userId, @PathVariable int accountId) {
         Optional<Account> findAccount = findUserAccount(userId, accountId);
         if (findAccount.isPresent()) {
             BigDecimal stringToBigDecimal = new BigDecimal(payment.getAmount());
             findAccount.get().add(stringToBigDecimal);
+            accountRepository.save(findAccount.get());
+        }
+    }
+
+    @PutMapping("/user/{userId}/account/{accountId}/payOff")
+    public void payOff(@RequestBody Payment payment, @PathVariable int userId, @PathVariable int accountId) {
+        Optional<Account> findAccount = findUserAccount(userId, accountId);
+        if (findAccount.isPresent()) {
+            BigDecimal stringToBigDecimal = new BigDecimal(payment.getAmount());
+            findAccount.get().substract(stringToBigDecimal);
             accountRepository.save(findAccount.get());
         }
     }

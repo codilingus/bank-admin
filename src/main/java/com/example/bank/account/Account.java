@@ -31,6 +31,10 @@ public class Account {
         this.balance = balance.add(moneyToAdd);
     }
 
+    public void substract(BigDecimal moneyToTake){
+        this.balance = balance.subtract(moneyToTake);
+    }
+
     public int getAccountId() {
         return accountId;
     }
