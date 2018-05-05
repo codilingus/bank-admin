@@ -122,9 +122,11 @@ public class UserController {
         }
     }
 
+
+
     @PutMapping("/user/{id}")
     public ResponseEntity updateUser(@RequestBody User user, @PathVariable int id) {
-        if (userValidator.validate(user)) {
+        if (!userValidator.validate(user)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } else {
             user.setUserId(id);

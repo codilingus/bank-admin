@@ -18,8 +18,8 @@ public class UserValidator {
     }
 
     private Boolean nameConsistsOfCharacters(User user){
-        String regex = "[^A-Za-z]+";
-        return user.getName().matches(regex) ||
+        String regex = "[A-Za-z]+";
+        return user.getName().matches(regex) &&
                 user.getSurname().matches(regex);
     }
 
@@ -49,6 +49,6 @@ public class UserValidator {
     }
 
     public Boolean validate(User user) {
-        return (!areValuesEmpty(user) && peselCounts11Numbers(user)  && nameConsistsOfCharacters(user));
+        return (!areValuesEmpty(user) && peselCounts11Numbers(user)  && nameConsistsOfCharacters(user) && isUserAdult(user));
     }
 }
