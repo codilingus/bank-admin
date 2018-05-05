@@ -122,6 +122,8 @@ public class UserController {
         }
     }
 
+
+
     @PutMapping("/user/{id}")
     public ResponseEntity updateUser(@RequestBody User user, @PathVariable int id) {
         if (!userValidator.validate(user)) {
