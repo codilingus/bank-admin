@@ -1,20 +1,20 @@
-package com.example.bank.paymentOrders;
+package com.example.bank.paymentOrderDto;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity
-public class PaymentOrders {
-    @Id
+
+public class PaymentOrderDto {
+
     private Long userPesel;
     private String amount;
 
-    public PaymentOrders(Long userPesel, String amount) {
+    public PaymentOrderDto(Long userPesel, String amount) {
         this.userPesel = userPesel;
         this.amount = amount;
     }
 
-    public PaymentOrders() {
+    public PaymentOrderDto() {
     }
 
     public Long getUserPesel() {

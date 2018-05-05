@@ -1,4 +1,7 @@
 package com.example.bank.repositories;
 
-public interface PaymentOrderRepository {
+import com.example.bank.PaymentOrder.PaymentOrder;
+import org.springframework.data.repository.CrudRepository;
+
+public interface PaymentOrderRepository extends CrudRepository<PaymentOrder, Integer> {
 }
