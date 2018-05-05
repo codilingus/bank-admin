@@ -28,9 +28,32 @@ public class UserValidator {
     }
 
     private Boolean isUserAdult(User user) {
-        int year = getInt(user, 0, 2);
-        int month = getInt(user, 2, 4);
-        int day = getInt(user, 4, 6);
+        if(isPeselCorrect(user)) {
+            int year = getYear(user);
+            int month = getMonth(user);
+            int day = getDay(user);
+
+            LocalDate birthDate = LocalDate.of(year, month, day);
+            return LocalDate.now().minusYears(18).compareTo(birthDate) >= 0;
+        }
+        return false;
+    }
+
+    private boolean isPeselCorrect(User user){
+        int year = getYear(user);
+        int month = getMonth(user);
+        int day = getDay(user);
+        return (day > 0 && day <= 31) && (month > 0 && month <= 32);
+    }
+
+    private int getInt(User user, int startIndex, int endIndex) {
+        String intFromPesel = user.getPesel().toString().substring(startIndex, endIndex);
+        return Integer.parseInt(intFromPesel);
+    }
+
+    private int getYear(User user){
+        int year = getInt(user, 0,2);
+        int month = getInt(user,2,4);
 
         if (month > 20) {
             year += 2000;
@@ -38,14 +61,19 @@ public class UserValidator {
         } else {
             year += 1900;
         }
-
-        LocalDate birthDate = LocalDate.of(year, month, day);
-        return LocalDate.now().minusYears(18).compareTo(birthDate) >= 0;
+        return year;
     }
 
-    private int getInt(User user, int startIndex, int endIndex) {
-        String intFromPesel = user.getPesel().toString().substring(startIndex, endIndex);
-        return Integer.parseInt(intFromPesel);
+    private int getMonth(User user){
+        int month = getInt(user,2, 4);
+        if (month > 20){
+            month -= 20;
+        }
+        return month;
+    }
+
+    private int getDay(User user) {
+        return getInt(user,4,6);
     }
 
     public Boolean validate(User user) {
