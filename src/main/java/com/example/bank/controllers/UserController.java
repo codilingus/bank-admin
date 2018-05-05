@@ -1,11 +1,13 @@
 package com.example.bank.controllers;
 
+import com.example.bank.PaymentOrder.PaymentOrder;
+import com.example.bank.PaymentOrder.Status;
 import com.example.bank.account.Account;
 import com.example.bank.account.Payment;
 import com.example.bank.account.Transfer;
-import com.example.bank.paymentOrders.PaymentOrders;
+import com.example.bank.paymentOrderDto.PaymentOrderDto;
 import com.example.bank.repositories.AccountRepository;
-import com.example.bank.repositories.PaymentOrdersRepository;
+import com.example.bank.repositories.PaymentOrderRepository;
 import com.example.bank.repositories.UserRepository;
 import com.example.bank.user.User;
 import com.example.bank.user.UserBasic;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +35,7 @@ public class UserController {
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
-    private PaymentOrdersRepository paymentOrdersRepository;
+    private PaymentOrderRepository paymentOrderRepository;
 
 
     @GetMapping("/user")
@@ -110,19 +113,29 @@ public class UserController {
     }
 
     @PostMapping("/payment-orders")
-    public ResponseEntity createPaymentOrder(@RequestBody PaymentOrders paymentOrders) {
+    public ResponseEntity createPaymentOrder(@RequestBody PaymentOrderDto paymentOrderDto) {
         Optional<User> userOptional = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .filter(user -> user.getPesel().equals(paymentOrders.getUserPesel()))
+                .filter(user -> user.getPesel().equals(paymentOrderDto.getUserPesel()))
                 .findFirst();
         if (userOptional.isPresent()) {
-            paymentOrdersRepository.save(paymentOrders);
+            BigDecimal stringToBigDecimal = new BigDecimal(paymentOrderDto.getAmount());
+            LocalDateTime date = LocalDateTime.now();
+            paymentOrderRepository.save(new PaymentOrder(stringToBigDecimal, date, userOptional.get(), Status.PENDING));
             return new ResponseEntity(HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
+    @PostMapping("/payment-orders/{id}/accept")
+    public ResponseEntity acceptPaymentOrder(){
+        return null;
+    }
 
+    @GetMapping("/payment-orders")
+    public Iterable<PaymentOrder> getAllPaymentOrders() {
+        return paymentOrderRepository.findAll();
+    }
 
     @PutMapping("/user/{id}")
     public ResponseEntity updateUser(@RequestBody User user, @PathVariable int id) {
