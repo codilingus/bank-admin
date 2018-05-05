@@ -1,7 +1,5 @@
 package com.example.bank.account;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,7 +13,6 @@ public class Account {
     @GeneratedValue
     private int accountId;
     private BigDecimal balance;
-    @JsonIgnore
     private LocalDate creationDate;
 
     public Account(int accountId, BigDecimal balance, LocalDate creationDate) {

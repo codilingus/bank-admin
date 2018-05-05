@@ -3,7 +3,9 @@ package com.example.bank.controllers;
 import com.example.bank.account.Account;
 import com.example.bank.account.Payment;
 import com.example.bank.account.Transfer;
+import com.example.bank.paymentOrders.PaymentOrders;
 import com.example.bank.repositories.AccountRepository;
+import com.example.bank.repositories.PaymentOrdersRepository;
 import com.example.bank.repositories.UserRepository;
 import com.example.bank.user.User;
 import com.example.bank.user.UserBasic;
@@ -13,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.jws.soap.SOAPBinding;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,6 +31,8 @@ public class UserController {
     private UserValidator userValidator;
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private PaymentOrdersRepository paymentOrdersRepository;
 
 
     @GetMapping("/user")
@@ -106,9 +109,22 @@ public class UserController {
         }
     }
 
+    @PostMapping("/payment-orders")
+    public ResponseEntity createPaymentOrder(@RequestBody PaymentOrders paymentOrders) {
+        Optional<User> userOptional = StreamSupport.stream(userRepository.findAll().spliterator(), false)
+                .filter(user -> user.getPesel().equals(paymentOrders.getUserPesel()))
+                .findFirst();
+        if (userOptional.isPresent()) {
+            paymentOrdersRepository.save(paymentOrders);
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PutMapping("/user/{id}")
     public ResponseEntity updateUser(@RequestBody User user, @PathVariable int id) {
-        if (!userValidator.validate(user)) {
+        if (userValidator.validate(user)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } else {
             user.setUserId(id);

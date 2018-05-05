@@ -17,6 +17,12 @@ public class UserValidator {
                 (user.getPesel() == null);
     }
 
+    private Boolean nameConsistsOfCharacters(User user){
+        String regex = "[^A-Za-z]+";
+        return user.getName().matches(regex) ||
+                user.getSurname().matches(regex);
+    }
+
     private Boolean peselCounts11Numbers(User user) {
         return (user.getPesel().toString().length() == 11);
     }
@@ -43,6 +49,6 @@ public class UserValidator {
     }
 
     public Boolean validate(User user) {
-        return (!areValuesEmpty(user) || peselCounts11Numbers(user) || isUserAdult(user));
+        return (!areValuesEmpty(user) && peselCounts11Numbers(user)  && nameConsistsOfCharacters(user));
     }
 }
