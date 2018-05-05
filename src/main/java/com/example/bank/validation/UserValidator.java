@@ -3,10 +3,7 @@ package com.example.bank.validation;
 import com.example.bank.user.User;
 import org.springframework.stereotype.Component;
 
-import javax.jws.soap.SOAPBinding;
 import java.time.LocalDate;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
 
 @Component
 public class UserValidator {
@@ -17,14 +14,14 @@ public class UserValidator {
                 (user.getPesel() == null);
     }
 
-    private Boolean nameConsistsOfCharacters(User user){
+    private Boolean nameOrSurnameConsistsOfCharacters(User user){
         String regex = "[a-zA-Z]+";
         return user.getName().matches(regex) &&
                 user.getSurname().matches(regex);
     }
 
     private Boolean peselCounts11Numbers(User user) {
-        return (user.getPesel().toString().length() == 11);
+        return (user.getPesel().length() == 11);
     }
 
     private Boolean isUserAdult(User user) {
@@ -47,7 +44,7 @@ public class UserValidator {
     }
 
     private int getInt(User user, int startIndex, int endIndex) {
-        String intFromPesel = user.getPesel().toString().substring(startIndex, endIndex);
+        String intFromPesel = user.getPesel().substring(startIndex, endIndex);
         return Integer.parseInt(intFromPesel);
     }
 
@@ -77,6 +74,6 @@ public class UserValidator {
     }
 
     public Boolean validate(User user) {
-        return (!areValuesEmpty(user) && nameConsistsOfCharacters(user) && peselCounts11Numbers(user) && isUserAdult(user));
+        return (!areValuesEmpty(user) && nameOrSurnameConsistsOfCharacters(user) && peselCounts11Numbers(user) && isUserAdult(user));
     }
 }
