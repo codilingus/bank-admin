@@ -17,12 +17,12 @@ public class User {
     private int userId;
     private String name;
     private String surname;
-    private Long pesel;
+    private String pesel;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Account> usersAccount = new LinkedList<>();
 
 
-    public User(String name, String surname, Long pesel) {
+    public User(String name, String surname, String pesel) {
         this.name = name;
         this.surname = surname;
         this.pesel = pesel;
@@ -63,11 +63,11 @@ public class User {
         this.surname = surname;
     }
 
-    public Long getPesel() {
+    public String getPesel() {
         return pesel;
     }
 
-    public void setPesel(Long pesel) {
+    public void setPesel(String pesel) {
         this.pesel = pesel;
     }
 
