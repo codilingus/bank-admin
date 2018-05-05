@@ -12,8 +12,8 @@ import java.time.temporal.TemporalAmount;
 public class UserValidator {
 
     private Boolean areValuesEmpty(User user) {
-        return (user.getName() == null || user.getName().isEmpty()) ||
-                ((user.getSurname() == null) || user.getSurname().isEmpty()) ||
+        return (user.getName() == null && user.getName().isEmpty()) &&
+                ((user.getSurname() == null) && user.getSurname().isEmpty()) &&
                 (user.getPesel() == null);
     }
 
@@ -22,19 +22,22 @@ public class UserValidator {
     }
 
     private Boolean isUserAdult(User user) {
-        int year = getInt(user, 0, 2);
-        int month = getInt(user, 2, 4);
-        int day = getInt(user, 4, 6);
+        if(isPeselCorrect(user)) {
+            int year = getYear(user);
+            int month = getMonth(user);
+            int day = getDay(user);
 
-        if (month > 20) {
-            year += 2000;
-            month -= 20;
-        } else {
-            year += 1900;
+            LocalDate birthDate = LocalDate.of(year, month, day);
+            return LocalDate.now().minusYears(18).compareTo(birthDate) >= 0;
         }
+        return false;
+    }
 
-        LocalDate birthDate = LocalDate.of(year, month, day);
-        return LocalDate.now().minusYears(18).compareTo(birthDate) >= 0;
+    private boolean isPeselCorrect(User user){
+        int year = getYear(user);
+        int month = getMonth(user);
+        int day = getDay(user);
+        return (day > 0 && day <= 31) && (month > 0 && month <= 32);
     }
 
     private int getInt(User user, int startIndex, int endIndex) {
@@ -42,7 +45,32 @@ public class UserValidator {
         return Integer.parseInt(intFromPesel);
     }
 
+    private int getYear(User user){
+        int year = getInt(user, 0,2);
+        int month = getInt(user,2,4);
+
+        if (month > 20) {
+            year += 2000;
+            month -= 20;
+        } else {
+            year += 1900;
+        }
+        return year;
+    }
+
+    private int getMonth(User user){
+        int month = getInt(user,2, 4);
+        if (month > 20){
+            month -= 20;
+        }
+        return month;
+    }
+
+    private int getDay(User user) {
+        return getInt(user,4,6);
+    }
+
     public Boolean validate(User user) {
-        return (!areValuesEmpty(user) || peselCounts11Numbers(user) || isUserAdult(user));
+        return (!areValuesEmpty(user) && peselCounts11Numbers(user) && isUserAdult(user));
     }
 }
