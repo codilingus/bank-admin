@@ -77,6 +77,6 @@ public class UserValidator {
     }
 
     public Boolean validate(User user) {
-        return (!areValuesEmpty(user) && peselCounts11Numbers(user)  && nameConsistsOfCharacters(user) && isUserAdult(user));
+        return (!areValuesEmpty(user) && nameConsistsOfCharacters(user) && peselCounts11Numbers(user) && isUserAdult(user));
     }
 }
