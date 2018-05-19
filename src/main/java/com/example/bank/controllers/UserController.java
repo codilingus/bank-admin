@@ -11,11 +11,13 @@ import com.example.bank.repositories.PaymentOrderRepository;
 import com.example.bank.repositories.UserRepository;
 import com.example.bank.user.User;
 import com.example.bank.user.UserBasic;
+import com.example.bank.validation.TransferValidator;
 import com.example.bank.validation.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.bank.validation.TransferValidator;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,6 +38,8 @@ public class UserController {
     private AccountRepository accountRepository;
     @Autowired
     private PaymentOrderRepository paymentOrderRepository;
+    @Autowired
+    private TransferValidator transferValidator;
 
 
     @GetMapping("/user")
@@ -92,7 +96,7 @@ public class UserController {
     @PostMapping("/user/{userId}/account/{accountId}/payOff")
     public void payOff(@RequestBody Payment payment, @PathVariable int userId, @PathVariable int accountId) {
         Optional<Account> findAccount = findUserAccount(userId, accountId);
-        if (findAccount.isPresent()) {
+        if (findAccount.isPresent() && transferValidator.isThereAnyMoney(findAccount)) {
             BigDecimal stringToBigDecimal = new BigDecimal(payment.getAmount());
             findAccount.get().substract(stringToBigDecimal);
             accountRepository.save(findAccount.get());

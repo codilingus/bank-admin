@@ -4,8 +4,6 @@ import com.example.bank.user.User;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
 
 @Component
 public class UserValidator {
