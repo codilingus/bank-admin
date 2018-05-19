@@ -96,7 +96,7 @@ public class UserController {
     @PostMapping("/user/{userId}/account/{accountId}/payOff")
     public void payOff(@RequestBody Payment payment, @PathVariable int userId, @PathVariable int accountId) {
         Optional<Account> findAccount = findUserAccount(userId, accountId);
-        if (findAccount.isPresent() && transferValidator.isThereAnyMoney(findAccount)) {
+        if (findAccount.isPresent() && transferValidator.isThereAnyMoney(findAccount.get())) {
             BigDecimal stringToBigDecimal = new BigDecimal(payment.getAmount());
             findAccount.get().substract(stringToBigDecimal);
             accountRepository.save(findAccount.get());
