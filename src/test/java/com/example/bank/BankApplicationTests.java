@@ -1,11 +1,17 @@
 package com.example.bank;
 
+import com.example.bank.account.Account;
+import com.example.bank.account.Transfer;
 import com.example.bank.user.User;
+import com.example.bank.validation.TransferValidator;
 import com.example.bank.validation.UserValidator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -15,6 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class BankApplicationTests {
 
     private UserValidator userValidator = new UserValidator();
+    private TransferValidator transferValidator = new TransferValidator();
 
     @Test
     public void shouldValidWhenUserNameIsEmpty() {
@@ -62,6 +69,22 @@ public class BankApplicationTests {
     public void shouldValidWhenSurnameConsistOfNumber(){
         User user = new User("Janka", "Janeczko4", "05221589653");
         boolean result = userValidator.validate(user);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void shouldValidWhenThereIsMoney(){
+        BigDecimal bd = new BigDecimal("20.0");
+        Account account = new Account(1, bd, LocalDate.now());
+        boolean result = transferValidator.isThereAnyMoney(account);
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void shouldValidWhenThereIsNoMoney(){
+        BigDecimal bd = new BigDecimal("0.0");
+        Account account = new Account(1, bd, LocalDate.now());
+        boolean result = transferValidator.isThereAnyMoney(account);
         assertThat(result).isFalse();
     }
 }
