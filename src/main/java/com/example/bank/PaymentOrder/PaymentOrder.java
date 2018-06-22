@@ -27,7 +27,7 @@ public class PaymentOrder {
     public PaymentOrder() {
     }
 
-    public PaymentOrder(BigDecimal amount, LocalDateTime modificationDate, User user, Status status ) {
+    public PaymentOrder(BigDecimal amount, LocalDateTime modificationDate, User user, Status status) {
         this.id = id;
         this.amount = amount;
         this.modificationDate = modificationDate;
@@ -54,5 +54,9 @@ public class PaymentOrder {
 
     public Status getStatus() {
         return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

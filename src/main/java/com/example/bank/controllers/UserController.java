@@ -128,8 +128,18 @@ public class UserController {
     }
 
     @PostMapping("/payment-orders/{id}/accept")
-    public ResponseEntity acceptPaymentOrder(){
-        return null;
+    public ResponseEntity acceptPaymentOrder(@RequestBody PaymentOrder paymentOrder, @PathVariable Integer id) {
+        Optional<PaymentOrder> optionalPaymentOrder = paymentOrderRepository.findById(id);
+        if (optionalPaymentOrder.isPresent() && optionalPaymentOrder.get().getStatus().equals(Status.PENDING)) {
+            Account defaultAccount = paymentOrder.getUser().getUsersAccount().get(0);
+            BigDecimal amount = paymentOrder.getAmount();
+            defaultAccount.substract(amount);
+            accountRepository.save(defaultAccount);
+            optionalPaymentOrder.get().setStatus(Status.ACCEPTED);
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/payment-orders")

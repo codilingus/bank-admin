@@ -4,8 +4,6 @@ import com.example.bank.user.User;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
 
 @Component
 public class UserValidator {
@@ -16,7 +14,7 @@ public class UserValidator {
                 (user.getPesel() == null);
     }
 
-    private Boolean nameOrSurnameConsistsOfCharacters(User user){
+    private Boolean nameOrSurnameConsistsOfCharacters(User user) {
         String regex = "[a-zA-Z]+";
         return user.getName().matches(regex) &&
                 user.getSurname().matches(regex);
@@ -27,7 +25,7 @@ public class UserValidator {
     }
 
     private Boolean isUserAdult(User user) {
-        if(isPeselCorrect(user)) {
+        if (isPeselCorrect(user)) {
             int year = getYear(user);
             int month = getMonth(user);
             int day = getDay(user);
@@ -38,7 +36,7 @@ public class UserValidator {
         return false;
     }
 
-    private boolean isPeselCorrect(User user){
+    private boolean isPeselCorrect(User user) {
         int year = getYear(user);
         int month = getMonth(user);
         int day = getDay(user);
@@ -50,9 +48,9 @@ public class UserValidator {
         return Integer.parseInt(intFromPesel);
     }
 
-    private int getYear(User user){
-        int year = getInt(user, 0,2);
-        int month = getInt(user,2,4);
+    private int getYear(User user) {
+        int year = getInt(user, 0, 2);
+        int month = getInt(user, 2, 4);
 
         if (month > 20) {
             year += 2000;
@@ -63,16 +61,16 @@ public class UserValidator {
         return year;
     }
 
-    private int getMonth(User user){
-        int month = getInt(user,2, 4);
-        if (month > 20){
+    private int getMonth(User user) {
+        int month = getInt(user, 2, 4);
+        if (month > 20) {
             month -= 20;
         }
         return month;
     }
 
     private int getDay(User user) {
-        return getInt(user,4,6);
+        return getInt(user, 4, 6);
     }
 
     public Boolean validate(User user) {

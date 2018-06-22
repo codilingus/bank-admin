@@ -36,9 +36,10 @@ public class User {
     }
 
     @JsonIgnore
-    public UserBasic getUserBasic(){
+    public UserBasic getUserBasic() {
         return new UserBasic(this.userId, this.name, this.surname);
     }
+
     public int getUserId() {
         return userId;
     }

@@ -24,11 +24,11 @@ public class Account {
     public Account() {
     }
 
-    public void add(BigDecimal moneyToAdd){
+    public void add(BigDecimal moneyToAdd) {
         this.balance = balance.add(moneyToAdd);
     }
 
-    public void substract(BigDecimal moneyToTake){
+    public void substract(BigDecimal moneyToTake) {
         this.balance = balance.subtract(moneyToTake);
     }
 
